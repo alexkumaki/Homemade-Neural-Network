@@ -6,22 +6,23 @@ from PIL import Image, ImageGrab
 import os
 import pathlib
 
+# Create the path to the .txt file containing the weights and biases
 CURRENT_DIRECTORY = os.path.dirname(os.path.abspath(__file__))
 variable_file = 'variables.txt'
 file_path = os.path.join(CURRENT_DIRECTORY, variable_file)
+
+# Define the size of the neural network
 input_size = 784
 hidden_size = 20
 output_size = 10
 
-
-# Define the activation functions and their derivatives
-def relu(x):
+def relu(x): # Define the ReLU activation function
     return np.maximum(0, x)
 
-def sigmoid(x):
+def sigmoid(x): # Define the Sigmoid activation function
     return 1 / (1 + np.exp(-x))
 
-def load_variables():
+def load_variables(): # Load the weights and biases if file exists, otherwise randomize them
     
     if os.path.exists(file_path):
         with open(file_path, 'r') as file:
@@ -35,34 +36,32 @@ def load_variables():
 
         weights1, weights2, bias1, bias2 = arrays
 
-        weights1 = weights1.reshape((20, 784))
-        weights2 = weights2.reshape((10, 20))
-        bias1 = bias1.reshape((20, 1))
-        bias2 = bias2.reshape((10,1))
+        weights1 = weights1.reshape((hidden_size, input_size))
+        weights2 = weights2.reshape((output_size, hidden_size))
+        bias1 = bias1.reshape((hidden_size, 1))
+        bias2 = bias2.reshape((output_size,1))
 
         print('Loaded Variables')
 
     else:
-        weights1 = np.random.uniform(-0.5, 0.5, (20, 784))
-        weights2 = np.random.uniform(-0.5, 0.5, (10, 20))
-        bias1 = np.zeros((20, 1))
-        bias2 = np.zeros((10, 1))
+        weights1 = np.random.uniform(-0.5, 0.5, (hidden_size, input_size))
+        weights2 = np.random.uniform(-0.5, 0.5, (output_size, hidden_size))
+        bias1 = np.zeros((hidden_size, 1))
+        bias2 = np.zeros((output_size, 1))
 
         print('Randomized Variables')
 
 
     return weights1, weights2, bias1, bias2
 
-# Forward pass
-def forward_propagation(X):
+def forward_propagation(X): # Run the inputs through the forward pass
     Z1 = np.dot(weights1, X) + bias1
     A1 = relu(Z1)
     Z2 = np.dot(weights2, A1) + bias2
     A2 = sigmoid(Z2)
     return A2
 
-# Create the GUI
-class DrawApp:
+class DrawApp: # Create the GUI
     def __init__(self, root):
         self.root = root
         self.root.title("Digit Recognizer")
@@ -111,8 +110,7 @@ class DrawApp:
         # Update the result label
         self.result_label.config(text=f"Predicted Digit: {predicted_digit[0]}")
 
-# Run the application
-if __name__ == "__main__":
+if __name__ == "__main__": # The main function that initializes the variables and runs the GUI
     weights1, weights2, bias1, bias2 = load_variables()
     root = tk.Tk()
     app = DrawApp(root)
