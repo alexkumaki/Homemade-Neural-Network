@@ -13,11 +13,6 @@ input_size = 784
 hidden_size = 20
 output_size = 10
 
-W1 = np.random.randn(hidden_size, input_size) * 0.01
-b1 = np.zeros((hidden_size, 1))
-W2 = np.random.randn(output_size, hidden_size) * 0.01
-b2 = np.zeros((output_size, 1))
-
 
 # Define the activation functions and their derivatives
 def relu(x):
@@ -38,31 +33,31 @@ def load_variables():
             array = np.loadtxt(lines)
             arrays.append(array)
 
-        W1, W2, b1, b2 = arrays
+        weights1, weights2, bias1, bias2 = arrays
 
-        W1 = W1.reshape((20, 784))
-        W2 = W2.reshape((10, 20))
-        b1 = b1.reshape((20, 1))
-        b2 = b2.reshape((10,1))
+        weights1 = weights1.reshape((20, 784))
+        weights2 = weights2.reshape((10, 20))
+        bias1 = bias1.reshape((20, 1))
+        bias2 = bias2.reshape((10,1))
 
         print('Loaded Variables')
 
     else:
-        W1 = np.random.uniform(-0.5, 0.5, (20, 784))
-        W2 = np.random.uniform(-0.5, 0.5, (10, 20))
-        b1 = np.zeros((20, 1))
-        b2 = np.zeros((10, 1))
+        weights1 = np.random.uniform(-0.5, 0.5, (20, 784))
+        weights2 = np.random.uniform(-0.5, 0.5, (10, 20))
+        bias1 = np.zeros((20, 1))
+        bias2 = np.zeros((10, 1))
 
         print('Randomized Variables')
 
 
-    return W1, W2, b1, b2
+    return weights1, weights2, bias1, bias2
 
 # Forward pass
 def forward_propagation(X):
-    Z1 = np.dot(W1, X) + b1
+    Z1 = np.dot(weights1, X) + bias1
     A1 = relu(Z1)
-    Z2 = np.dot(W2, A1) + b2
+    Z2 = np.dot(weights2, A1) + bias2
     A2 = sigmoid(Z2)
     return A2
 
@@ -74,7 +69,7 @@ class DrawApp:
         
         self.canvas = Canvas(root, width=200, height=200, bg="white")
         self.canvas.grid(row=0, column=0, columnspan=4)
-        self.canvas.bind("<B1-Motion>", self.paint)
+        self.canvas.bind("<bias1-Motion>", self.paint)
         
         self.clear_button = tk.Button(root, text="Clear", command=self.clear_canvas)
         self.clear_button.grid(row=1, column=0)
@@ -118,7 +113,7 @@ class DrawApp:
 
 # Run the application
 if __name__ == "__main__":
-    W1, W2, b1, b2 = load_variables()
+    weights1, weights2, bias1, bias2 = load_variables()
     root = tk.Tk()
     app = DrawApp(root)
     root.mainloop()
